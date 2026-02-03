@@ -26,14 +26,6 @@ tools = [
     suggest_fix
 ]
 
-# llm_with_tools = llm.bind_tools(tools)
-
-
-# def llm_node(state: DebuggerState):
-#     response = llm_with_tools.invoke(state["messages"])
-#     return {
-#         "messages": [response]
-#     }
 
 def llm_node(state: DebuggerState):
     response = llm.invoke(state["messages"])

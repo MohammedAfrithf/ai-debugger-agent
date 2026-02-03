@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Debugger Agent</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #38bdf8;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 20px;
+            display: block;
+        }
+
+        textarea, input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 6px;
+            border: none;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 180px;
+        }
+
+        input {
+            font-family: Arial, sans-serif;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0ea5e9;
+        }
+
+        .response {
+            background: #020617;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+
+        pre {
+        background: #020617;
+        padding: 15px;
+        border-radius: 6px;
+        overflow-x: auto;
+        }
+
+        code {
+            color: #38bdf8;
+        }
+
+    </style>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<body>
+
+<h1>🧠 AI Debugger Agent</h1>
+
+<div class="container">
+
+    <label>🧾 Paste your code</label>
+    <textarea id="code" placeholder="Paste your Python / Java / JS code here..."></textarea>
+
+    <label>What do you want to do❓</label>
+    <input id="query" placeholder="Example: find errors / fix this code / explain this code">
+
+    <button onclick="sendRequest()">Analyze Code</button>
+
+    <div class="response" id="response">
+        Response will appear here...
+    </div>
+
+</div>
+
+<script>
+    async function sendRequest() {
+        const code = document.getElementById("code").value;
+        const query = document.getElementById("query").value;
+        const responseBox = document.getElementById("response");
+
+        if (!code || !query) {
+            responseBox.innerHTML = "⚠️ Please enter both code and query.";
+            return;
+        }
+
+        responseBox.innerHTML = "⏳ Analyzing...";
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/debug", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    code: code,
+                    query: query
+                })
+            });
+
+            const data = await res.json();
+            responseBox.innerHTML = marked.parse(data.response);
+
+
+        } catch (error) {
+            responseBox.innerHTML = "❌ Error connecting to backend.";
+            console.error(error);
+        }
+    }
+</script>
+
+</body>
+</html>
